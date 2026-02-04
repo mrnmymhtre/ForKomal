@@ -9,25 +9,29 @@
 *{box-sizing:border-box}
 body{
   margin:0;
-  height:100vh;
+  min-height:100svh;
   display:flex;
   justify-content:center;
   align-items:center;
   background:linear-gradient(135deg,#ff758c,#ff7eb3);
   font-family:'Segoe UI',sans-serif;
-  overflow:hidden;
 }
+
 
 /* Card */
 .card{
   background:#fff;
   width:90%;
   max-width:360px;
+  max-height:90svh;
   padding:18px;
   border-radius:22px;
   text-align:center;
   box-shadow:0 12px 30px rgba(0,0,0,.25);
+  overflow-y:auto;
+  -webkit-overflow-scrolling: touch;
 }
+
 
 /* Text */
 h1{color:#ff4d6d;font-size:22px;margin:8px 0}
@@ -105,6 +109,14 @@ button{
 @keyframes floatUp{
   to{transform:translateY(-110vh);opacity:0}
 }
+
+@media (max-height: 700px) {
+  .frame img {
+    max-height: 220px;
+    object-fit: cover;
+  }
+}
+
 </style>
 </head>
 
