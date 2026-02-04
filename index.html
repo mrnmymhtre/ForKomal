@@ -1,102 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Will You Be My Valentine? ❤️</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: linear-gradient(135deg, #ff758c, #ff7eb3);
-      font-family: 'Segoe UI', sans-serif;
-      overflow: hidden;
-    }
+<meta charset="UTF-8">
+<title>Komal ❤️ Mrunmay</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    .card {
-      background: white;
-      padding: 30px 20px;
-      border-radius: 20px;
-      text-align: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      max-width: 90%;
-    }
+<style>
+body{
+  margin:0;
+  height:100vh;
+  background:linear-gradient(135deg,#ff758c,#ff7eb3);
+  font-family:'Segoe UI',sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+}
 
-    h1 {
-      color: #ff4d6d;
-      margin-bottom: 20px;
-    }
+.card{
+  background:#fff;
+  padding:25px 18px;
+  border-radius:22px;
+  text-align:center;
+  width:90%;
+  max-width:360px;
+  box-shadow:0 12px 30px rgba(0,0,0,.25);
+  z-index:2;
+}
 
-    .buttons {
-      position: relative;
-      height: 120px;
-    }
+h1{
+  color:#ff4d6d;
+  font-size:22px;
+  margin-bottom:10px;
+}
 
-    button {
-      padding: 12px 25px;
-      font-size: 18px;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
+p{
+  color:#444;
+  font-size:16px;
+  margin-bottom:15px;
+}
 
-    #yesBtn {
-      background-color: #ff4d6d;
-      color: white;
-      margin-right: 10px;
-    }
+.buttons{
+  position:relative;
+  height:120px;
+}
 
-    #noBtn {
-      background-color: #ddd;
-      position: absolute;
-    }
+button{
+  padding:12px 22px;
+  font-size:16px;
+  border:none;
+  border-radius:30px;
+  cursor:pointer;
+  position:absolute;
+}
 
-    .love {
-      font-size: 26px;
-      color: #ff4d6d;
-      margin-top: 20px;
-      display: none;
-    }
-  </style>
+#yesBtn{
+  background:#ff4d6d;
+  color:#fff;
+  left:60px;
+}
+
+#noBtn{
+  background:#eee;
+  left:160px;
+}
+
+.love,.secret{
+  display:none;
+  margin-top:18px;
+  line-height:1.5;
+}
+
+.love{
+  color:#ff4d6d;
+  font-size:17px;
+}
+
+.secret{
+  color:#333;
+  font-size:15px;
+}
+
+/* Loading screen (hidden by default) */
+.loading{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(255,255,255,.95);
+  z-index:10;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  font-size:18px;
+  color:#ff4d6d;
+}
+
+/* Error toast */
+.error{
+  display:none;
+  position:fixed;
+  bottom:20px;
+  background:#ff4d6d;
+  color:#fff;
+  padding:10px 18px;
+  border-radius:20px;
+  z-index:20;
+  font-size:14px;
+}
+
+/* Floating hearts */
+.heart{
+  position:fixed;
+  bottom:-10px;
+  animation:floatUp 6s linear infinite;
+}
+@keyframes floatUp{
+  to{transform:translateY(-110vh);opacity:0}
+}
+
+/* Confetti */
+.confetti{
+  position:fixed;
+  top:-10px;
+  animation:fall 3s linear forwards;
+}
+@keyframes fall{
+  to{transform:translateY(110vh) rotate(360deg);opacity:0}
+}
+</style>
 </head>
+
 <body>
 
-  <div class="card">
-    <h1>Hey ❤️<br>Will you be my Valentine?</h1>
+<audio id="music" loop>
+  <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3">
+</audio>
 
-    <div class="buttons">
-      <button id="yesBtn">YES 💖</button>
-      <button id="noBtn">NO 😜</button>
-    </div>
+<div class="loading" id="loading">
+  Analysing your answer… 🤖❤️
+</div>
 
-    <div class="love" id="loveMsg">
-      Yaaayyy!! 💕😍  
-      I knew it!  
-      Happy Valentine’s Day ❤️
-    </div>
+<div class="error" id="error">
+  ❌ System refusing NO option
+</div>
+
+<div class="card">
+  <h1 id="title">Hey Komal ❤️</h1>
+  <p id="question">Will you be my Valentine? 🥹💖</p>
+
+  <div class="buttons" id="buttons">
+    <button id="yesBtn">YES 💕</button>
+    <button id="noBtn">NO 😜</button>
   </div>
 
-  <script>
-    const noBtn = document.getElementById("noBtn");
-    const yesBtn = document.getElementById("yesBtn");
-    const loveMsg = document.getElementById("loveMsg");
+  <div class="love" id="love">
+    YAAAYYYY 😍🎉<br>
+    Happy Valentine’s Day ❤️<br><br>
+    <b>— From your future husband,<br>Mrunmay 😎💍</b>
+  </div>
 
-    noBtn.addEventListener("mouseover", () => {
-      const x = Math.random() * 200 - 100;
-      const y = Math.random() * 100 - 50;
-      noBtn.style.transform = `translate(${x}px, ${y}px)`;
-    });
+  <div class="secret" id="secret">
+    🤫 Secret: I fall for you more every single day.
+  </div>
+</div>
 
-    yesBtn.addEventListener("click", () => {
-      loveMsg.style.display = "block";
-      yesBtn.style.display = "none";
-      noBtn.style.display = "none";
-    });
-  </script>
+<script>
+const yesBtn=document.getElementById("yesBtn");
+const noBtn=document.getElementById("noBtn");
+const buttons=document.getElementById("buttons");
+const title=document.getElementById("title");
+const question=document.getElementById("question");
+const loading=document.getElementById("loading");
+const error=document.getElementById("error");
+const love=document.getElementById("love");
+const secret=document.getElementById("secret");
+const music=document.getElementById("music");
+
+/* NO behaviour */
+function refuseNo(){
+  noBtn.style.transform=
+    `translate(${Math.random()*160-80}px,${Math.random()*80-40}px)`;
+
+  if(navigator.vibrate) navigator.vibrate(200);
+
+  error.style.display="block";
+  setTimeout(()=>error.style.display="none",1000);
+}
+
+noBtn.addEventListener("mouseover",refuseNo);
+noBtn.addEventListener("touchstart",refuseNo);
+
+/* YES behaviour */
+yesBtn.addEventListener("click",()=>{
+  loading.style.display="flex";
+
+  setTimeout(()=>{
+    loading.style.display="none";
+
+    // Remove old content
+    title.style.display="none";
+    question.style.display="none";
+    buttons.style.display="none";
+
+    // Show celebration
+    love.style.display="block";
+    secret.style.display="block";
+    music.play();
+    confetti();
+  },1800);
+});
+
+/* Floating hearts */
+setInterval(()=>{
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="❤️";
+  h.style.left=Math.random()*100+"vw";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),6000);
+},450);
+
+/* Confetti burst */
+function confetti(){
+  const e=["🎉","💖","✨","🥳"];
+  for(let i=0;i<35;i++){
+    const c=document.createElement("div");
+    c.className="confetti";
+    c.innerHTML=e[Math.floor(Math.random()*e.length)];
+    c.style.left=Math.random()*100+"vw";
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+}
+</script>
 
 </body>
 </html>
