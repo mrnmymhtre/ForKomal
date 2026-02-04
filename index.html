@@ -6,91 +6,94 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+*{box-sizing:border-box}
 body{
   margin:0;
   height:100vh;
-  background:linear-gradient(135deg,#ff758c,#ff7eb3);
-  font-family:'Segoe UI',sans-serif;
   display:flex;
   justify-content:center;
   align-items:center;
+  background:linear-gradient(135deg,#ff758c,#ff7eb3);
+  font-family:'Segoe UI',sans-serif;
   overflow:hidden;
 }
 
+/* Card */
 .card{
   background:#fff;
-  padding:25px 18px;
-  border-radius:22px;
-  text-align:center;
   width:90%;
   max-width:360px;
+  padding:18px;
+  border-radius:22px;
+  text-align:center;
   box-shadow:0 12px 30px rgba(0,0,0,.25);
-  z-index:2;
 }
 
-h1{color:#ff4d6d;font-size:22px}
-p{color:#444;font-size:16px}
+/* Text */
+h1{color:#ff4d6d;font-size:22px;margin:8px 0}
+p{color:#444;font-size:16px;margin:10px 0}
 
-.buttons{position:relative;height:120px}
-
+/* Buttons */
 button{
   padding:12px 22px;
-  font-size:16px;
   border:none;
   border-radius:30px;
+  font-size:16px;
   cursor:pointer;
-  margin:8px;
+  margin:6px;
 }
-
 #yesBtn{background:#ff4d6d;color:#fff}
 #noBtn{background:#eee}
 
-.loading{
+/* Photo frame */
+.frame{
   display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(255,255,255,.95);
-  z-index:10;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-  font-size:18px;
-  color:#ff4d6d;
+  margin-top:12px;
+  padding:8px;
+  border-radius:18px;
+  background:linear-gradient(135deg,#ff4d6d,#ff9aa2);
 }
-
-.error{
-  display:none;
-  position:fixed;
-  bottom:20px;
-  background:#ff4d6d;
-  color:#fff;
-  padding:10px 18px;
-  border-radius:20px;
-  z-index:20;
-  font-size:14px;
-}
-
-/* Photo fade-in */
-.photo{
-  display:none;
+.frame img{
   width:100%;
-  border-radius:16px;
-  margin-top:15px;
-  animation:fadeIn 1.8s ease forwards;
+  border-radius:14px;
+  animation:fadeIn 1.4s ease forwards;
 }
 @keyframes fadeIn{
   from{opacity:0;transform:scale(.95)}
   to{opacity:1;transform:scale(1)}
 }
 
-.love,.secret,.restartBox{
+/* Music button */
+.musicBtn{
   display:none;
-  margin-top:15px;
+  margin-top:10px;
+  background:#ffe3ea;
 }
 
-.love{
-  color:#ff4d6d;
-  font-size:17px;
+/* Voice waveform */
+#wave{
+  display:none;
+  height:18px;
+  margin-top:6px;
+}
+#wave span{
+  display:inline-block;
+  width:4px;
+  height:100%;
+  background:#ff4d6d;
+  margin:0 2px;
+  animation:wave 1s infinite ease-in-out;
+}
+#wave span:nth-child(odd){animation-delay:.2s}
+@keyframes wave{
+  0%,100%{height:20%}
+  50%{height:100%}
+}
+
+/* Restart */
+.restart{
+  display:none;
+  margin-top:12px;
 }
 
 /* Floating hearts */
@@ -102,123 +105,114 @@ button{
 @keyframes floatUp{
   to{transform:translateY(-110vh);opacity:0}
 }
-
-/* Confetti */
-.confetti{
-  position:fixed;
-  top:-10px;
-  animation:fall 3s linear forwards;
-}
-@keyframes fall{
-  to{transform:translateY(110vh) rotate(360deg);opacity:0}
-}
 </style>
 </head>
 
 <body>
 
+<audio id="bgm" loop>
+  <source src="bgmusic.mp3">
+</audio>
 <audio id="voice">
   <source src="voice.mp3">
 </audio>
-
-<div class="loading" id="loading">
-  Analysing your answer… 🤖❤️
-</div>
-
-<div class="error" id="error">
-  ❌ System refusing NO option
-</div>
 
 <div class="card">
 
   <h1 id="title">Hey Komal ❤️</h1>
   <p id="question">Will you be my Valentine? 🥹💖</p>
 
-  <div class="buttons" id="buttons">
+  <div id="buttons">
     <button id="yesBtn">YES 💕</button>
     <button id="noBtn">NO 😜</button>
   </div>
 
-  <!-- Celebration -->
-  <img src="photo.jpg" class="photo" id="photo">
-
-  <div class="love" id="love">
-    YAAAYYYY 😍🎉<br>
-    Happy Valentine’s Day ❤️<br><br>
-    <b>— From your future husband,<br>Mrunmay 😎💍</b>
+  <div class="frame" id="frame">
+    <img src="photo.jpg" alt="Komal & Me">
   </div>
 
-  <button id="voiceBtn" style="display:none">
-    Tap to play my voice 💬
-  </button>
-
-  <div class="secret" id="secret">
-    🤫 Secret: I fall for you more every single day.
+  <div id="love" style="display:none;color:#ff4d6d;margin-top:10px">
+    Happy Valentine’s Day ❤️<br>
+    <b>— From your future husband,<br>Mrunmay 💍</b>
   </div>
 
-  <!-- Restart -->
-  <div class="restartBox" id="restartBox">
-    <button id="restartBtn">
-      Start again 🔁
-    </button>
+  <button class="musicBtn" id="musicBtn">🔊 Mute</button>
+
+  <button id="voiceBtn" style="display:none">Tap to play my voice 💬</button>
+  <div id="wave">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <div class="restart" id="restart">
+    <button onclick="location.reload()">Start again 🔁</button>
   </div>
 
 </div>
 
 <script>
-const yesBtn=document.getElementById("yesBtn");
-const noBtn=document.getElementById("noBtn");
-const buttons=document.getElementById("buttons");
-const loading=document.getElementById("loading");
-const title=document.getElementById("title");
-const question=document.getElementById("question");
+const yes=document.getElementById("yesBtn");
+const no=document.getElementById("noBtn");
+const frame=document.getElementById("frame");
 const love=document.getElementById("love");
-const photo=document.getElementById("photo");
-const voiceBtn=document.getElementById("voiceBtn");
+const bgm=document.getElementById("bgm");
+const musicBtn=document.getElementById("musicBtn");
 const voice=document.getElementById("voice");
-const secret=document.getElementById("secret");
-const restartBox=document.getElementById("restartBox");
-const restartBtn=document.getElementById("restartBtn");
-const error=document.getElementById("error");
+const voiceBtn=document.getElementById("voiceBtn");
+const wave=document.getElementById("wave");
+const restart=document.getElementById("restart");
 
-/* NO behaviour */
-function refuseNo(){
-  noBtn.style.transform =
-    `translate(${Math.random()*120-60}px,${Math.random()*60-30}px)`;
+/* Playful NO */
+function moveNo(){
+  const x = Math.random()*120 - 60;
+  const y = Math.random()*80 - 40;
+  no.style.transform = `translate(${x}px, ${y}px)`;
 
-  if(navigator.vibrate) navigator.vibrate(200);
+  // playful error
+  showNoError();
 
-  error.style.display="block";
-  setTimeout(()=>error.style.display="none",900);
+  // vibration on mobile (if supported)
+  if(navigator.vibrate){
+    navigator.vibrate(120);
+  }
 }
-noBtn.onmouseover=refuseNo;
-noBtn.ontouchstart=refuseNo;
 
-/* YES behaviour */
-yesBtn.onclick=()=>{
-  loading.style.display="flex";
+/* Desktop hover */
+no.onmouseover = moveNo;
 
-  setTimeout(()=>{
-    loading.style.display="none";
-    title.style.display="none";
-    question.style.display="none";
-    buttons.style.display="none";
+/* Mobile tap */
+no.ontouchstart = (e)=>{
+  e.preventDefault();
+  moveNo();
+};
 
-    photo.style.display="block";
-    love.style.display="block";
-    voiceBtn.style.display="inline-block";
-    secret.style.display="block";
-    restartBox.style.display="block";
 
-    confetti();
-  },1600);
+/* YES */
+yes.onclick=()=>{
+  document.getElementById("title").style.display="none";
+  document.getElementById("question").style.display="none";
+  document.getElementById("buttons").style.display="none";
+
+  frame.style.display="block";
+  love.style.display="block";
+  voiceBtn.style.display="inline-block";
+  restart.style.display="block";
+
+  bgm.play();
+  musicBtn.style.display="inline-block";
+};
+
+/* Music toggle */
+musicBtn.onclick=()=>{
+  bgm.muted=!bgm.muted;
+  musicBtn.innerText=bgm.muted?"🔈 Unmute":"🔊 Mute";
 };
 
 /* Voice */
-voiceBtn.onclick=()=>voice.play();
-
-/* Restart */
-restartBtn.onclick=()=>location.reload();
+voiceBtn.onclick=()=>{
+  voice.play();
+  wave.style.display="block";
+};
+voice.onended=()=>wave.style.display="none";
 
 /* Hearts */
 setInterval(()=>{
@@ -228,20 +222,32 @@ setInterval(()=>{
   h.style.left=Math.random()*100+"vw";
   document.body.appendChild(h);
   setTimeout(()=>h.remove(),6000);
-},450);
+},700);
 
-/* Confetti */
-function confetti(){
-  const e=["🎉","💖","✨","🥳"];
-  for(let i=0;i<30;i++){
-    const c=document.createElement("div");
-    c.className="confetti";
-    c.innerHTML=e[Math.floor(Math.random()*e.length)];
-    c.style.left=Math.random()*100+"vw";
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),3000);
-  }
+/* Playful NO error */
+const error = document.createElement("div");
+error.style.position="fixed";
+error.style.bottom="20px";
+error.style.left="50%";
+error.style.transform="translateX(-50%)";
+error.style.background="#ff4d6d";
+error.style.color="#fff";
+error.style.padding="10px 18px";
+error.style.borderRadius="20px";
+error.style.fontSize="14px";
+error.style.display="none";
+error.style.zIndex="999";
+error.innerText="Nice try 😜 But NO is not an option";
+document.body.appendChild(error);
+
+function showNoError(){
+  error.style.display="block";
+  clearTimeout(error.timer);
+  error.timer=setTimeout(()=>{
+    error.style.display="none";
+  },1000);
 }
+
 </script>
 
 </body>
